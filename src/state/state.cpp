@@ -3,8 +3,9 @@
 #include <cstdint>
 
 #include "./state.hpp"
+#include <climits>
 #include "../config.hpp"
-
+int dir[8][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 
 /**
  * @brief evaluate the state
@@ -13,7 +14,50 @@
  */
 int State::evaluate(){
   // [TODO] design your own evaluation function
-  return 0;
+  int king = 10000, queen = 100, bishop = 80, knight = 70, rook = 60, pawn = 20;
+  int myvalue = 0, opvalue = 0;
+  if(this -> player && this -> game_state == WIN) return INT_MIN;
+  if(!this -> player && this -> game_state == WIN) return INT_MAX;
+  for(int j = 0; j < BOARD_H; j++){
+    for(int k = 0; k < BOARD_W; k++){
+      int mytype = board.board[0][j][k], optype = board.board[1][j][k];
+      if(mytype == 1) myvalue += pawn;
+      else if(mytype == 2){
+        // int white = 0, black = 0;
+        // for(int i = 0; i < 4; i++){
+        //   for(int x = 1; x < 5; x++){
+        //     int newx = j + dir[i][0] * x, newy = dir[i][1] * x;
+        //     if(newx < 0 || newy < 0 || newx >= BOARD_H || newy >= BOARD_W) break;
+        //     if(newx == )
+        //   }
+        // }
+        myvalue += rook;
+      } 
+      else if(mytype == 3) myvalue += knight;
+      else if(mytype == 4) myvalue += bishop;
+      else if(mytype == 5) myvalue += queen;
+      else if(mytype == 6){
+        // int defen = 0;
+        // for(int i = 0; i < 8; i++){
+        //   int newx = j + dir[i][0], newy = k + dir[i][1];
+        //   if(newx >= 0 && newy >= 0 && newx < BOARD_H && newy < BOARD_W){
+        //     if(!board.board[0][newx][newy]) defen++;
+        //   }
+        // }
+        myvalue += king; 
+      } 
+      
+      if(optype == 1) opvalue += pawn;
+      else if(optype == 2) opvalue += rook;
+      else if(optype == 3) opvalue += knight;
+      else if(optype == 4) opvalue += bishop;
+      else if(optype == 5) opvalue += queen;
+      else if(optype == 6) opvalue += king; 
+    } 
+  }
+  if(myvalue >= king && opvalue < king) return INT_MAX;
+  if(myvalue < king && opvalue >= king) return INT_MIN;
+  return myvalue - opvalue;
 }
 
 
