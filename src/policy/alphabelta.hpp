@@ -8,6 +8,6 @@
  */
 class Smart{
 public:
-  static Move get_move(State *state, int depth);
+  static Move get_move(State *state, int depth, int player);
   //static int minimax(State *state, int depth, int maximize);
 };

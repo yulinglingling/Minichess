@@ -42,18 +42,22 @@ void read_board(std::ifstream& fin) {
 
 void write_valid_spot(std::ofstream& fout) {
   // Keep updating the output until getting killed.
-  std::ofstream log("gamelog2.txt");
   
+  int depth = 5;
   while(true) {
     // Choose a random spot.
-    log << "getmove " << root -> player << '\n';
-    auto move = Smart::get_move(root, 5);
+    
+    int p = 0;
+    if(root -> player) p = -1;
+    else if(!root -> player) p = 1; 
+    auto move = Smart::get_move(root, depth, p);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     
     // Remember to flush the output to ensure the last action is written to file.
     fout.flush();
-    break;
+    depth++;
+    //break;
   }
   
 }
