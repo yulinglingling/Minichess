@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <climits>
 #include "../state/state.hpp"
-#include "./alphabelta.hpp"
+#include "./submission.hpp"
 
 
 /**
@@ -45,7 +45,7 @@ int alphabelta(State *state, int depth, int bigger, int smaller, int maximize){
   return val;
 }
 
-Move Smart::get_move(State *state, int depth, int player){
+Move submit::get_move(State *state, int depth, int player){
   
   if(!state->legal_actions.size())
     state->get_legal_actions();

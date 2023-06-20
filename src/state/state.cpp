@@ -1,63 +1,129 @@
 #include <iostream>
 #include <sstream>
 #include <cstdint>
-
+#include <cmath>
 #include "./state.hpp"
 #include <climits>
 #include "../config.hpp"
-int dir[8][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+
+#include <fstream>
+//int dir[8][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 
 /**
  * @brief evaluate the state
  * 
  * @return int 
  */
+
+// bool atk_by_bqueen(Board b, int r1, int c1, int r2, int c2){
+//   if(r1 == r2){
+//     for(int i = std :: min(c1, c2) + 1; i < std :: max(c1, c2); i++){
+//       if(b.board[0][r1][i] || b.board[1][r1][i]) return false;
+//     }
+//     return true;
+//   }
+//   if(c1 == c2){
+//     for(int i = std :: min(r1, r2) + 1; i < std :: max(r1, r2); i++){
+//       if(b.board[0][i][c1] || b.board[1][i][c1]) return false;
+//     }
+//     return true;
+//   }
+//   if(abs(r1 - r2) == abs(c1 - c2)){
+//     int dx = (r2 - r1) / abs(r1 - r2), dy = (c2 - c1) / abs(c1 - c2);
+//     for(int i = 1; i < abs(r1 - r2); i++){
+//       if(b.board[0][r1 + dx * i][c1 + dy * i] || b.board[1][r1 + dx * i][c1 + dy * i]) return false;
+//     }
+//     return true;
+//   }
+// }
+
+// bool atk_by_bbishop(Board b, int r1, int c1, int r2, int c2){
+//   if(abs(r1 - r2) == abs(c1 - c2)){
+//     int dx = (r2 - r1) / abs(r1 - r2), dy = (c2 - c1) / abs(c1 - c2);
+//     for(int i = 1; i < abs(r1 - r2); i++){
+//       if(b.board[0][r1 + dx * i][c1 + dy * i] || b.board[1][r1 + dx * i][c1 + dy * i]) return false;
+//     }
+//     return true;
+//   }
+//   return false;
+// }
+
+// bool atk_by_brook(Board b, int r1, int c1, int r2, int c2){
+//   if(r1 == r2){
+//     for(int i = std :: min(c1, c2) + 1; i < std :: max(c1, c2); i++){
+//       if(b.board[0][r1][i] || b.board[1][r1][i]) return false;
+//     }
+//     return true;
+//   }
+//   if(c1 == c2){
+//     for(int i = std :: min(r1, r2) + 1; i < std :: max(r1, r2); i++){
+//       if(b.board[0][i][c1] || b.board[1][i][c1]) return false;
+//     }
+//     return true;
+//   }
+//   return false;
+// }
+
 int State::evaluate(){
+  //std::ofstream log("evaluate.txt");
   // [TODO] design your own evaluation function
-  int king = 10000, queen = 100, bishop = 80, knight = 70, rook = 60, pawn = 20;
-  int myvalue = 0, opvalue = 0;
-  if(this -> player && this -> game_state == WIN) return INT_MIN;
-  if(!this -> player && this -> game_state == WIN) return INT_MAX;
-  for(int j = 0; j < BOARD_H; j++){
-    for(int k = 0; k < BOARD_W; k++){
-      int mytype = board.board[0][j][k], optype = board.board[1][j][k];
-      if(mytype == 1) myvalue += pawn;
-      else if(mytype == 2){
-        // int white = 0, black = 0;
-        // for(int i = 0; i < 4; i++){
-        //   for(int x = 1; x < 5; x++){
-        //     int newx = j + dir[i][0] * x, newy = dir[i][1] * x;
-        //     if(newx < 0 || newy < 0 || newx >= BOARD_H || newy >= BOARD_W) break;
-        //     if(newx == )
-        //   }
-        // }
-        myvalue += rook;
-      } 
-      else if(mytype == 3) myvalue += knight;
-      else if(mytype == 4) myvalue += bishop;
-      else if(mytype == 5) myvalue += queen;
-      else if(mytype == 6){
-        // int defen = 0;
-        // for(int i = 0; i < 8; i++){
-        //   int newx = j + dir[i][0], newy = k + dir[i][1];
-        //   if(newx >= 0 && newy >= 0 && newx < BOARD_H && newy < BOARD_W){
-        //     if(!board.board[0][newx][newy]) defen++;
-        //   }
-        // }
-        myvalue += king; 
-      } 
-      
-      if(optype == 1) opvalue += pawn;
-      else if(optype == 2) opvalue += rook;
-      else if(optype == 3) opvalue += knight;
-      else if(optype == 4) opvalue += bishop;
-      else if(optype == 5) opvalue += queen;
-      else if(optype == 6) opvalue += king; 
-    } 
+  //log << "getmove " << state -> player << '\n';
+  int val[7] = {0, 20, 60, 70, 80, 200, 10000};
+  int ans = 0;
+  for(int i = 0; i < BOARD_H; i++){
+    for(int j = 0; j < BOARD_W; j++){
+      //ans += board.board[0][i][j] - board.board[1][i][j];
+      ans += (val[board.board[0][i][j] - 0] - val[board.board[1][i][j] - 0]);
+      //std :: cout << val[board.board[player][i][j] - 0] << ' ';
+    }
+    //std :: cout << '\n';
   }
-  if(myvalue >= king && opvalue < king) return INT_MAX;
-  if(myvalue < king && opvalue >= king) return INT_MIN;
-  return myvalue - opvalue;
+  
+  return ans;
+  // int king = 10000, queen = 100, bishop = 80, knight = 70, rook = 60, pawn = 20;
+  // int myvalue = 0, opvalue = 0;
+  // if(this -> player && this -> game_state == WIN) return INT_MIN;
+  // if(!this -> player && this -> game_state == WIN) return INT_MAX;
+  // for(int j = 0; j < BOARD_H; j++){
+  //   for(int k = 0; k < BOARD_W; k++){
+  //     int mytype = board.board[0][j][k], optype = board.board[1][j][k];
+  //     if(mytype == 1) myvalue += pawn;
+  //     else if(mytype == 2){
+  //       // int white = 0, black = 0;
+  //       // for(int i = 0; i < 4; i++){
+  //       //   for(int x = 1; x < 5; x++){
+  //       //     int newx = j + dir[i][0] * x, newy = dir[i][1] * x;
+  //       //     if(newx < 0 || newy < 0 || newx >= BOARD_H || newy >= BOARD_W) break;
+  //       //     if(newx == )
+  //       //   }
+  //       // }
+  //       myvalue += rook;
+  //     } 
+  //     else if(mytype == 3) myvalue += knight;
+  //     else if(mytype == 4) myvalue += bishop;
+  //     else if(mytype == 5) myvalue += queen;
+  //     else if(mytype == 6){
+  //       // int defen = 0;
+  //       // for(int i = 0; i < 8; i++){
+  //       //   int newx = j + dir[i][0], newy = k + dir[i][1];
+  //       //   if(newx >= 0 && newy >= 0 && newx < BOARD_H && newy < BOARD_W){
+  //       //     if(!board.board[0][newx][newy]) defen++;
+  //       //   }
+  //       // }
+  //       myvalue += king; 
+  //     } 
+      
+  //     if(optype == 1) opvalue += pawn;
+  //     else if(optype == 2) opvalue += rook;
+  //     else if(optype == 3) opvalue += knight;
+  //     else if(optype == 4) opvalue += bishop;
+  //     else if(optype == 5) opvalue += queen;
+  //     else if(optype == 6) opvalue += king; 
+  //   } 
+  // }
+  // if(myvalue >= king && opvalue < king) return INT_MAX;
+  // if(myvalue < king && opvalue >= king) return INT_MIN;
+  // return myvalue - opvalue;
 }
 
 

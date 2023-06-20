@@ -139,8 +139,8 @@ void State::get_legal_actions(){
           case 1: //pawn
             if(this->player && i<BOARD_H-1){
               //black
-              if(!oppn_board[i+1][j] && !self_board[i+1][j])
-                all_actions.push_back(Move(Point(i, j), Point(i+1, j)));
+              // if(!oppn_board[i+1][j] && !self_board[i+1][j])
+              //   all_actions.push_back(Move(Point(i, j), Point(i+1, j)));
               if(j<BOARD_W-1 && (oppn_piece=oppn_board[i+1][j+1])>0){
                 all_actions.push_back(Move(Point(i, j), Point(i+1, j+1)));
                 if(oppn_piece==6){
@@ -152,15 +152,20 @@ void State::get_legal_actions(){
               if(j>0 && (oppn_piece=oppn_board[i+1][j-1])>0){
                 all_actions.push_back(Move(Point(i, j), Point(i+1, j-1)));
                 if(oppn_piece==6){
+                  all_actions.clear();
+                  all_actions.push_back(Move(Point(i, j), Point(i+1, j-1)));
                   this->game_state = WIN;
                   this->legal_actions = all_actions;
                   return;
                 }
               }
+              if(!oppn_board[i+1][j] && !self_board[i+1][j]){
+                all_actions.push_back(Move(Point(i, j), Point(i+1, j)));
+              }
             }else if(!this->player && i>0){
               //white
-              if(!oppn_board[i-1][j] && !self_board[i-1][j])
-                all_actions.push_back(Move(Point(i, j), Point(i-1, j)));
+              // if(!oppn_board[i-1][j] && !self_board[i-1][j])
+              //   all_actions.push_back(Move(Point(i, j), Point(i-1, j)));
               if(j<BOARD_W-1 && (oppn_piece=oppn_board[i-1][j+1])>0){
                 all_actions.push_back(Move(Point(i, j), Point(i-1, j+1)));
                 if(oppn_piece==6){
@@ -176,6 +181,9 @@ void State::get_legal_actions(){
                   this->legal_actions = all_actions;
                   return;
                 }
+              }
+              if(!oppn_board[i-1][j] && !self_board[i-1][j]){
+                all_actions.push_back(Move(Point(i, j), Point(i-1, j)));
               }
             }
             break;
@@ -204,6 +212,8 @@ void State::get_legal_actions(){
                 oppn_piece = oppn_board[p[0]][p[1]];
                 if(oppn_piece){
                   if(oppn_piece==6){
+                    all_actions.clear();
+                    all_actions.push_back(Move(Point(i, j), Point(p[0], p[1])));
                     this->game_state = WIN;
                     this->legal_actions = all_actions;
                     return;
@@ -226,6 +236,8 @@ void State::get_legal_actions(){
               
               oppn_piece = oppn_board[x][y];
               if(oppn_piece==6){
+                all_actions.clear();
+                all_actions.push_back(Move(Point(i, j), Point(x, y)));
                 this->game_state = WIN;
                 this->legal_actions = all_actions;
                 return;
@@ -245,6 +257,8 @@ void State::get_legal_actions(){
               
               oppn_piece = oppn_board[p[0]][p[1]];
               if(oppn_piece==6){
+                all_actions.clear();
+                all_actions.push_back(Move(Point(i, j), Point(p[0], p[1])));
                 this->game_state = WIN;
                 this->legal_actions = all_actions;
                 return;
@@ -445,6 +459,7 @@ int main(int argc, char** argv) {
       action.first.second = y;
       action.second.first = n;
       action.second.second = m;
+      //log << "from " << x << ' ' << y << " to " << n << ' ' << m << '\n';
       total ++;
     }
     fin.close();

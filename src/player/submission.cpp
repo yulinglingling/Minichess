@@ -3,7 +3,7 @@
 
 #include "../config.hpp"
 #include "../state/state.hpp"
-#include "../policy/mcts.hpp"
+#include "../policy/submission.hpp"
 
 
 State* root;
@@ -43,22 +43,21 @@ void read_board(std::ifstream& fin) {
 void write_valid_spot(std::ofstream& fout) {
   // Keep updating the output until getting killed.
   
-  int depth = 40;
+  int depth = 5;
   while(true) {
     // Choose a random spot.
     
     int p = 0;
     if(root -> player) p = -1;
     else if(!root -> player) p = 1; 
-    auto move = MCTS::get_move(root, 50, p);
+    auto move = submit::get_move(root, depth, p);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     
     // Remember to flush the output to ensure the last action is written to file.
     fout.flush();
-    break;
-    depth ++;
-    
+    depth++;
+    //break;
   }
   
 }

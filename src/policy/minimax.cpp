@@ -19,10 +19,11 @@
 int minimax(State *state, int depth, int maximize){
   auto actions = state->legal_actions;
   int sz = actions.size();
+  
   if(depth == 0 || !sz){
     return state -> evaluate();
   }
-  
+
   int val = -1e9;
   for(size_t i = 0; i < sz; i++){
     State *s = state -> next_state(actions[i]);
@@ -39,9 +40,11 @@ Move Minimax::get_move(State *state, int depth, int player){
     state->get_legal_actions();
   
   auto actions = state->legal_actions;
+
+  int sz = actions.size();
   
   int val = INT_MIN, ans = 0;
-  for(size_t i = 0; i < actions.size(); i++){
+  for(size_t i = 0; i < sz; i++){
     State *s = state -> next_state(actions[i]);
     int tmp = minimax(s, depth - 1, (0 - player)) * player;
     if(tmp > val) val = tmp, ans = i;
