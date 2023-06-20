@@ -34,12 +34,12 @@ float mcts(State *state, int depth, int maximize){
 Move MCTS::get_move(State *state, int depth, int player){
   
   //std::cout << "now " << now << '\n';
-  int cnt = 0;
-  for(int i = 0; i < BOARD_H; i++){
-    for(int j = 0; j < BOARD_W; j++){
-      if(state -> board.board[!state -> player][i][j]) cnt++;
-    }
-  }
+  // int cnt = 0;
+  // for(int i = 0; i < BOARD_H; i++){
+  //   for(int j = 0; j < BOARD_W; j++){
+  //     if(state -> board.board[!state -> player][i][j]) cnt++;
+  //   }
+  // }
   //int stand = std :: min((10 - cnt) * 0.1 + 0.5, 0.9);
   if(!state->legal_actions.size())
     state->get_legal_actions();

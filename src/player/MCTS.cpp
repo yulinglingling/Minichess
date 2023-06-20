@@ -50,13 +50,13 @@ void write_valid_spot(std::ofstream& fout) {
     int p = 0;
     if(root -> player) p = -1;
     else if(!root -> player) p = 1; 
-    auto move = MCTS::get_move(root, 50, p);
+    auto move = MCTS::get_move(root, depth, p);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     
     // Remember to flush the output to ensure the last action is written to file.
     fout.flush();
-    break;
+    //break;
     depth ++;
     
   }
